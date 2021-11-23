@@ -3,12 +3,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 
 public class Check {
@@ -17,7 +17,7 @@ public class Check {
 
         InputStream is = new FileInputStream("C:/Users/xsyoo/Desktop/Demo/DATA0.json");
         String line; // 用来保存每行读取的内容
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         line = reader.readLine(); // 读取第一行
 
@@ -48,10 +48,10 @@ public class Check {
         JSONArray data = jsonObject.getJSONArray("data");
         System.out.println(data);
 
-        ArrayList<Feeds> feedsList = new ArrayList<Feeds>();
+        ArrayList<Feeds> feedsList = new ArrayList<>();
 
 
-        String htmls = "";
+        StringBuilder htmls = new StringBuilder();
         System.out.println(data.size());
         for (int i = 0; i < data.size()-1; i++) {
 
@@ -71,7 +71,7 @@ public class Check {
             feeds.setNickname(nickname);
             feeds.setOpuin(opuid);
             feeds.setUin(uin);
-            htmls += feeds.getHtml() + "<div>------------分割线------------</div>";
+            htmls.append(feeds.getHtml()).append("<div>------------分割线------------</div>");
 
             Document feed_li = Jsoup.parse(html);
             Elements head = feed_li.getElementsByClass("f-single-head");
@@ -92,25 +92,40 @@ public class Check {
             Elements logoUrl = feed_li.select("div.user-pto>a>img");
             feeds.setLogoUrl(logoUrl.attr("src"));
 
-            System.out.println(feeds.toString());
             feedsList.add(feeds);
 
         }
 
-
-
-
+        for (Feeds feed:feedsList){
+            System.out.println(feed.toString());
+        }
 
 
         FileWriter writer;
         try {
             writer = new FileWriter("E:/data.html");
-            writer.write(htmls);
+            writer.write(htmls.toString());
             writer.flush();
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
+
+
+    public void merge(ArrayList<Feeds> feedsList){
+
+        feedsList.sort(new Comparator<Feeds>() {
+            @Override
+            public int compare(Feeds o1, Feeds o2) {
+                return o1.getContentText().compareTo(o2.getContentText());
+            }
+        });
+
+
+
+    }
+
 
 }

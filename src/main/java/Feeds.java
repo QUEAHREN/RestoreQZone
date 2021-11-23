@@ -93,14 +93,14 @@ public class Feeds {
     @Override
     public String toString(){
 
-        String str = "昵称:" + nickname + "QQ号:" + uin + "操作时间:" + feedstime + '\n' +
+        String str = "昵称:" + nickname + " QQ:" + uin + " 操作时间:" + feedstime + '\n' +
                 "Head:" + headText + '\n' +
                 "Content:" + contentText + '\n' +
                 "Foot:" + footText + '\n' +
                 "缩略图Url:" + imgUrl + '\n' +
                 "头像Url:" + logoUrl + '\n' +
                 "原始地址:" + detailUrl + '\n' +
-                "--------------------------------------------------------------\n";
+                "--------------------------------------------------------------";
         return str;
 
     }
