@@ -45,6 +45,10 @@ public class Feeds {
         this.uin = uin;
     }
 
+//    private String processHtml(){
+//
+//
+//    }
 
     @Override
     public String toString(){

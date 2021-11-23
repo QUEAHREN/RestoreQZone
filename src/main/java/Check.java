@@ -1,6 +1,10 @@
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.awt.*;
 import java.io.*;
@@ -36,12 +40,7 @@ public class Check {
         String data_s = buffer.toString();
 
         int beginIndex = 0;
-//        for (int i = 0; i < data_s.length(); i ++){
-//            if (data_s.charAt(i) == '[') {
-//                beginIndex = i;
-//                break;
-//            }
-//        }
+
         String JsonData = data_s.substring(beginIndex, data_s.length()-2);
 
         System.out.println(JsonData);
@@ -52,7 +51,9 @@ public class Check {
         JSONArray data = jsonObject.getJSONArray("data");
         System.out.println(data);
 
-        for (int i = 0; i < 2; i++) {
+        String htmls = "";
+        System.out.println(data.size());
+        for (int i = 0; i < data.size()-1; i++) {
 
             JSONObject datai = data.getJSONObject(i);
 
@@ -60,7 +61,7 @@ public class Check {
             String html = datai.getString("html");
             String logimg = datai.getString("logimg");
             String nickname = datai.getString("nickname");
-            String opuid = datai.getString("opuid");
+            String opuid = datai.getString("opuin");
             String uin = datai.getString("uin");
 
             Feeds feeds = new Feeds();
@@ -70,13 +71,27 @@ public class Check {
             feeds.setNickname(nickname);
             feeds.setOpuin(opuid);
             feeds.setUin(uin);
+            htmls += feeds.getHtml() + "<div>------------分割线------------<div/>";
 
-            System.out.println(feeds.toString());
 
         }
 
 
+        Document doc = Jsoup.parse(htmls);
+        Elements links = doc.select("a[href]");
+        Elements media = doc.select("[src]");
+        Elements imports = doc.select("link[href]");
+        
 
+        FileWriter writer;
+        try {
+            writer = new FileWriter("E:/data.html");
+            writer.write(htmls);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
