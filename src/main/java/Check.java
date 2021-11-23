@@ -77,11 +77,47 @@ public class Check {
         }
 
 
-        Document doc = Jsoup.parse(htmls);
-        Elements links = doc.select("a[href]");
-        Elements media = doc.select("[src]");
-        Elements imports = doc.select("link[href]");
-        
+
+
+//        Elements links = doc.getElementsByTag("a");
+//        for (Element link : links) {
+//            String linkHref = link.attr("href");
+//            String linkText = link.text();
+//            System.out.println(linkText);
+//        }
+        int feed_id = 1;
+        Document docs = Jsoup.parse(htmls);
+        Elements feed_lis = docs.getElementsByClass("f-single");
+        for (Element feed_li : feed_lis) {
+
+            System.out.println("id:"+feed_id);
+
+            Elements head = feed_li.getElementsByClass("f-single-head");
+            String headText = head.text();
+            System.out.println("Head:"+headText);
+
+            Elements content = feed_li.getElementsByClass("f-single-content");
+            String contentText = content.text();
+            System.out.println("content:"+contentText);
+
+            Elements foot = feed_li.getElementsByClass("f-single-foot");
+            String footText = foot.text();
+            System.out.println("foot:"+footText);
+
+            Elements detailUrl = feed_li.getElementsByAttribute("data-detailurl");
+            String detailUrlText = detailUrl.attr("data-detailurl");
+            System.out.println(detailUrlText);
+
+            Elements Src = feed_li.select("a.img-item>img");
+            String srcText = Src.attr("src");
+            System.out.println(srcText);
+
+            feed_id ++;
+
+        }
+
+//        f-single-content f-wrap
+
 
         FileWriter writer;
         try {
