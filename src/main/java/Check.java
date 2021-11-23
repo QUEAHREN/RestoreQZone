@@ -8,13 +8,12 @@ import org.jsoup.select.Elements;
 
 import java.awt.*;
 import java.io.*;
+import java.util.ArrayList;
 
 
 public class Check {
 
     public static void main(String[] args) throws IOException {
-
-
 
         InputStream is = new FileInputStream("C:/Users/xsyoo/Desktop/Demo/DATA0.json");
         String line; // 用来保存每行读取的内容
@@ -23,7 +22,6 @@ public class Check {
         line = reader.readLine(); // 读取第一行
 
 
-        int flag = 0;
         while (line != null) { // 如果 line 为空说明读完了
             if (line.equals("\t\"data\":")) {
                 line = reader.readLine(); // 读取下一行
@@ -40,7 +38,6 @@ public class Check {
         String data_s = buffer.toString();
 
         int beginIndex = 0;
-
         String JsonData = data_s.substring(beginIndex, data_s.length()-2);
 
         System.out.println(JsonData);
@@ -50,6 +47,9 @@ public class Check {
         System.out.println(main);
         JSONArray data = jsonObject.getJSONArray("data");
         System.out.println(data);
+
+        ArrayList<Feeds> feedsList = new ArrayList<Feeds>();
+
 
         String htmls = "";
         System.out.println(data.size());
@@ -71,52 +71,35 @@ public class Check {
             feeds.setNickname(nickname);
             feeds.setOpuin(opuid);
             feeds.setUin(uin);
-            htmls += feeds.getHtml() + "<div>------------分割线------------<div/>";
+            htmls += feeds.getHtml() + "<div>------------分割线------------</div>";
 
-
-        }
-
-
-
-
-//        Elements links = doc.getElementsByTag("a");
-//        for (Element link : links) {
-//            String linkHref = link.attr("href");
-//            String linkText = link.text();
-//            System.out.println(linkText);
-//        }
-        int feed_id = 1;
-        Document docs = Jsoup.parse(htmls);
-        Elements feed_lis = docs.getElementsByClass("f-single");
-        for (Element feed_li : feed_lis) {
-
-            System.out.println("id:"+feed_id);
-
+            Document feed_li = Jsoup.parse(html);
             Elements head = feed_li.getElementsByClass("f-single-head");
-            String headText = head.text();
-            System.out.println("Head:"+headText);
+            feeds.setHeadText(head.text());
 
             Elements content = feed_li.getElementsByClass("f-single-content");
-            String contentText = content.text();
-            System.out.println("content:"+contentText);
+            feeds.setContentText(content.text());
 
             Elements foot = feed_li.getElementsByClass("f-single-foot");
-            String footText = foot.text();
-            System.out.println("foot:"+footText);
+            feeds.setFootText(foot.text());
 
             Elements detailUrl = feed_li.getElementsByAttribute("data-detailurl");
-            String detailUrlText = detailUrl.attr("data-detailurl");
-            System.out.println(detailUrlText);
+            feeds.setDetailUrl(detailUrl.attr("data-detailurl"));
 
-            Elements Src = feed_li.select("a.img-item>img");
-            String srcText = Src.attr("src");
-            System.out.println(srcText);
+            Elements imgUrl = feed_li.select("a.img-item>img");
+            feeds.setImgUrl(imgUrl.attr("src"));
 
-            feed_id ++;
+            Elements logoUrl = feed_li.select("div.user-pto>a>img");
+            feeds.setLogoUrl(logoUrl.attr("src"));
+
+            System.out.println(feeds.toString());
+            feedsList.add(feeds);
 
         }
 
-//        f-single-content f-wrap
+
+
+
 
 
         FileWriter writer;
