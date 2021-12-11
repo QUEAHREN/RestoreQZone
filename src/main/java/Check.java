@@ -6,6 +6,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,7 +16,7 @@ import java.util.Comparator;
 
 public class Check {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, SQLException {
 
         InputStream is = new FileInputStream("C:/Users/xsyoo/Desktop/Demo/DATA0.json");
         String line; // 用来保存每行读取的内容
@@ -49,7 +52,6 @@ public class Check {
         System.out.println(data);
 
         ArrayList<Feeds> feedsList = new ArrayList<>();
-
 
         StringBuilder htmls = new StringBuilder();
         System.out.println(data.size());
@@ -93,8 +95,11 @@ public class Check {
             feeds.setLogoUrl(logoUrl.attr("src"));
 
             feedsList.add(feeds);
+            feeds.updateDB();
 
         }
+
+
 
         for (Feeds feed:feedsList){
             System.out.println(feed.toString());

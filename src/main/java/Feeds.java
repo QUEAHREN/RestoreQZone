@@ -1,3 +1,8 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 public class Feeds {
 
     private String opuin;
@@ -87,6 +92,33 @@ public class Feeds {
     }
     public void setLogoUrl(String logoUrl) {
         this.logoUrl = logoUrl;
+    }
+
+    public void updateDB() throws SQLException {
+
+        String JDBC_URL = "jdbc:mysql://101.35.85.119:3306/feeds";
+        String JDBC_USER = "root";
+        String JDBC_PASSWORD = "Xsy123456";
+
+        try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD)) {
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "INSERT INTO feeds (nickname, feedstime, uin, headTxt, contentTxt, footTxt, detailUrl, " +
+                            "imgUrl, logoUrl) VALUES (?,?,?,?,?,?,?,?,?)")) {
+                ps.setObject(1, getNickname());
+                ps.setObject(2, getFeedstime());
+                ps.setObject(3, getUin());
+                ps.setObject(4, getHeadText());
+                ps.setObject(5, getContentText());
+                ps.setObject(6, getFootText());
+                ps.setObject(7, getDetailUrl());
+                ps.setObject(8, getImgUrl());
+                ps.setObject(9, getLogoUrl());
+                int n = ps.executeUpdate(); // 1
+            }
+            conn.close();
+        }
+
+
     }
 
 
